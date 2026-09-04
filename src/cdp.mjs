@@ -25,6 +25,15 @@ export async function waitForEndpoint (endpoint = DEFAULT_ENDPOINT, timeoutMs = 
   }
 }
 
+/**
+ * List page targets. Useful when a browser has several tabs open: picking the
+ * first one is a trap, since anything the user opens later can shadow it.
+ */
+export async function listTabs (endpoint = DEFAULT_ENDPOINT) {
+  const targets = await httpJson(endpoint, '/json')
+  return targets.filter((t) => t.type === 'page')
+}
+
 export class Tab {
   #ws; #id = 0; #pending = new Map()
 
@@ -40,8 +49,20 @@ export class Tab {
     })
   }
 
+  /** Attach to an existing tab whose URL matches, instead of opening a new one. */
+  static async attach (endpoint = DEFAULT_ENDPOINT, match) {
+    const test = match instanceof RegExp ? (u) => match.test(u) : (u) => u.includes(match)
+    const target = (await listTabs(endpoint)).find((t) => test(t.url))
+    if (!target) throw new Error(`No open tab matching ${match}`)
+    return Tab.#connect(endpoint, target)
+  }
+
   static async open (endpoint = DEFAULT_ENDPOINT, url = 'about:blank') {
     const target = await httpJson(endpoint, `/json/new?${encodeURIComponent(url)}`, 'PUT')
+    return Tab.#connect(endpoint, target)
+  }
+
+  static async #connect (endpoint, target) {
     const ws = new WebSocket(target.webSocketDebuggerUrl)
     await new Promise((resolve, reject) => {
       ws.addEventListener('open', resolve, { once: true })
