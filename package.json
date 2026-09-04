@@ -1,0 +1,41 @@
+{
+  "name": "dom2figma",
+  "version": "0.1.0",
+  "description": "Turn any live web page into editable Figma layers. No hosted renderer, no per-import quota — it drives your own headless Chrome.",
+  "type": "module",
+  "bin": {
+    "dom2figma": "src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "figma-plugin",
+    "skill",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "capture": "node src/cli.mjs",
+    "build:plugin": "node scripts/build-plugin.mjs"
+  },
+  "keywords": [
+    "figma",
+    "design-to-code",
+    "code-to-design",
+    "html-to-figma",
+    "cdp",
+    "mcp",
+    "agents"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jocarrd/dom2figma.git"
+  },
+  "author": "Jorge Carrera Díez"
+}
