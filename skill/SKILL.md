@@ -52,6 +52,12 @@ afterwards.
    nodes than the DOM has is a bug in the capture, not a simple page — check for
    overlays, lazy content that needs a longer `--settle`, or auth walls.
 
+   If you are driving Figma through the browser rather than clicking Build yourself,
+   *sending the keystrokes is not evidence that anything ran*. Confirm against the
+   document: read back the frame and its child count, and compare it with the JSON.
+   A build loop that only checks "I pressed the keys" will happily report success for
+   an entire batch that never landed.
+
 ## Batching
 
 For many routes, drive the library rather than the CLI: `capture()` returns plain
